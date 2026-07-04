@@ -1,135 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Notion Weather Widget</title>
+<select onchange="getWeather(this.value)">
+<option>Bhopal</option>
+<option>Delhi</option>
+<option>Mumbai</option>
+<option>Indore</option>
+<option>Raipur</option>
+<option>Jaipur</option>
+<option>Ahmedabad</option>
+<option>Bengaluru</option>
+<option>Chennai</option>
+<option>Hyderabad</option>
+<option>Kolkata</option>
+<option>Lucknow</option>
+</select>
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-font-family:Arial,sans-serif;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-background:linear-gradient(135deg,#0f172a,#1e293b);
-}
-.card{
-width:340px;
-padding:25px;
-border-radius:25px;
-background:rgba(255,255,255,.10);
-backdrop-filter:blur(20px);
-color:#fff;
-text-align:center;
-border:1px solid rgba(255,255,255,.15);
-box-shadow:0 10px 30px rgba(0,0,0,.35);
-}
-#time{
-font-size:42px;
-font-weight:bold;
-}
-#date{
-margin:10px 0 20px;
-font-size:17px;
-opacity:.85;
-}
-.weather{
-padding:15px;
-border-radius:18px;
-background:rgba(255,255,255,.08);
-}
-.temp{
-font-size:32px;
-font-weight:bold;
-margin:8px 0;
-}
-.city{
-font-size:14px;
-opacity:.8;
-}
-</style>
+<div id="city"></div>
+<div id="temp"></div>
+<div id="humidity"></div>
+<div id="wind"></div>
+<div id="condition"></div>
 
-</head>
-<body>
+const API_KEY = "FVUSM8WRNVLWGAKNQQ5LCXZ7F";
 
-<div class="card">
+async function getWeather(city = "Bhopal") {
 
-<div id="time"></div>
+  const url =
+  `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=metric&include=current&key=${API_KEY}&contentType=json`;
 
-<div id="date"></div>
+  const res = await fetch(url);
+  const data = await res.json();
 
-<div class="weather">
+  document.getElementById("city").innerHTML = "📍 " + data.resolvedAddress;
 
-<div class="city">📍 Bhopal, India</div>
+  document.getElementById("temp").innerHTML =
+      "🌡️ " + data.currentConditions.temp + "°C";
 
-<div class="temp" id="temp">--°C</div>
+  document.getElementById("humidity").innerHTML =
+      "💧 Humidity : " + data.currentConditions.humidity + "%";
 
-<div id="condition">Loading...</div>
+  document.getElementById("wind").innerHTML =
+      "🌬️ Wind : " + data.currentConditions.windspeed + " km/h";
 
-</div>
-
-</div>
-
-<script>
-
-function clock(){
-
-const now=new Date();
-
-document.getElementById("time").innerHTML=
-now.toLocaleTimeString("en-IN",{
-hour:"2-digit",
-minute:"2-digit",
-second:"2-digit",
-hour12:true,
-timeZone:"Asia/Kolkata"
-});
-
-document.getElementById("date").innerHTML=
-now.toLocaleDateString("en-IN",{
-weekday:"long",
-day:"numeric",
-month:"long",
-year:"numeric",
-timeZone:"Asia/Kolkata"
-});
+  document.getElementById("condition").innerHTML =
+      "☁️ " + data.currentConditions.conditions;
 
 }
 
-clock();
-
-setInterval(clock,1000);
-
-async function weather(){
-
-const url="https://api.open-meteo.com/v1/forecast?latitude=23.2599&longitude=77.4126&current=temperature_2m,weather_code";
-
-const res=await fetch(url);
-
-const data=await res.json();
-
-document.getElementById("temp").innerHTML=data.current.temperature_2m+"°C";
-
-const code=data.current.weather_code;
-
-let text="☀️ Clear";
-
-if(code<=3) text="⛅ Partly Cloudy";
-if(code>=45) text="🌫️ Fog";
-if(code>=51) text="🌧️ Rain";
-if(code>=95) text="⛈️ Thunderstorm";
-
-document.getElementById("condition").innerHTML=text;
-
-}
-
-weather();
-
-setInterval(weather,600000);
-
-</script>
-
-</body>
-</html>
+getWeather("Bhopal");
