@@ -1,48 +1,82 @@
-<select onchange="getWeather(this.value)">
-<option>Bhopal</option>
-<option>Delhi</option>
-<option>Mumbai</option>
-<option>Indore</option>
-<option>Raipur</option>
-<option>Jaipur</option>
-<option>Ahmedabad</option>
-<option>Bengaluru</option>
-<option>Chennai</option>
-<option>Hyderabad</option>
-<option>Kolkata</option>
-<option>Lucknow</option>
-</select>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<div id="city"></div>
-<div id="temp"></div>
-<div id="humidity"></div>
-<div id="wind"></div>
-<div id="condition"></div>
+<style>
 
-const API_KEY = "FVUSM8WRNVLWGAKNQQ5LCXZ7F";
+body{
+margin:0;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:transparent;
+overflow:hidden;
+font-family:Arial,Helvetica,sans-serif;
+}
 
-async function getWeather(city = "Bhopal") {
+#datetime{
 
-  const url =
-  `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=metric&include=current&key=${API_KEY}&contentType=json`;
+font-size:22px;
+font-weight:700;
+color:#000;
 
-  const res = await fetch(url);
-  const data = await res.json();
+text-shadow:
+0 0 2px #FFD700,
+0 0 5px #FFD700,
+0 0 10px #FFC107;
 
-  document.getElementById("city").innerHTML = "📍 " + data.resolvedAddress;
-
-  document.getElementById("temp").innerHTML =
-      "🌡️ " + data.currentConditions.temp + "°C";
-
-  document.getElementById("humidity").innerHTML =
-      "💧 Humidity : " + data.currentConditions.humidity + "%";
-
-  document.getElementById("wind").innerHTML =
-      "🌬️ Wind : " + data.currentConditions.windspeed + " km/h";
-
-  document.getElementById("condition").innerHTML =
-      "☁️ " + data.currentConditions.conditions;
+white-space:nowrap;
 
 }
 
-getWeather("Bhopal");
+@media(max-width:480px){
+
+#datetime{
+font-size:18px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="datetime"></div>
+
+<script>
+
+function update(){
+
+const now=new Date();
+
+const date=now.toLocaleDateString("en-IN",{
+weekday:"short",
+day:"2-digit",
+month:"short",
+year:"numeric"
+});
+
+const time=now.toLocaleTimeString("en-IN",{
+hour:"2-digit",
+minute:"2-digit",
+second:"2-digit",
+hour12:true
+});
+
+document.getElementById("datetime").innerHTML=date+" | "+time;
+
+}
+
+update();
+
+setInterval(update,1000);
+
+</script>
+
+</body>
+</html>
